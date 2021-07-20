@@ -1,0 +1,1255 @@
+Create database BancaElectronica;
+use BancaElectronica;
+#=========================================CREAR TABLAS========================================#
+delimiter $$
+create procedure Tipo_Operacion()
+begin 
+	create table Tipo_Operacion(id_toper int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Estado()
+begin 
+	create table Estado(id_estado int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Moneda()
+begin 
+	create table Moneda(id_moneda int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Proveedor()
+begin 
+	create table Proveedor(id_prov int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Servicio()
+begin 
+	create table Servicio(id_servi int not null auto_increment primary key,
+    nombre varchar (30),
+    proveedor int,
+    foreign key (proveedor) references Proveedor(id_Prov));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Tipo_identificacion()
+begin 
+	create table Tipo_identificacion(id_tident int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Genero()
+begin 
+	create table Genero(id_genero int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Nacionalidad()
+begin 
+	create table Nacionalidad(id_nacion int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Zona()
+begin 
+	create table Zona(id_zona int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Telefonia()
+begin 
+	create table Telefonia(id_tel int not null auto_increment primary key,
+    nombre varchar (30));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Cliente()
+begin 
+	create table Cliente(id_cliente int not null auto_increment primary key,
+    Codigo int,
+    Primer_nombre varchar (30),
+    segundo_nombre varchar (30),
+    primer_apellido varchar (30),
+    segundo_apellido varchar (30),
+    genero int,
+    direccion int,
+    nacionalidad int,
+    tipo_identificacion int,
+    no_identificacion int,
+    foreign key (genero) references Genero(id_genero),
+    foreign key (direccion) references Zona(id_zona),
+    foreign key (nacionalidad) references Nacionalidad(id_nacion),
+    foreign key (tipo_identificacion) references Tipo_identificacion(id_tident));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Telefono_casa()
+begin 
+	create table Telefono_casa(id_casa int not null auto_increment primary key,
+    numero int,
+    cliente int,
+    telefonia int,
+    foreign key (cliente) references Cliente(id_cliente),
+    foreign key (telefonia) references telefonia(id_tel));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Telefono_trabajo()
+begin 
+	create table Telefono_trabajo(id_trabajo int not null auto_increment primary key,
+    numero int,
+    cliente int,
+    telefonia int,
+    foreign key (cliente) references Cliente(id_cliente),
+    foreign key (telefonia) references telefonia(id_tel));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Telefono_Movil()
+begin 
+	create table Telefono_Movil(id_Movil int not null auto_increment primary key,
+    numero int,
+    cliente int,
+    telefonia int,
+    foreign key (cliente) references Cliente(id_cliente),
+    foreign key (telefonia) references telefonia(id_tel));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Cuenta()
+begin 
+	create table Cuenta(id_cuenta int not null auto_increment primary key,
+    cliente int,
+    moneda int,
+    saldo int,
+    foreign key (cliente) references Cliente(id_cliente),
+    foreign key (moneda) references Moneda(id_moneda));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Usuario()
+begin 
+	create table Usuario(id_Usuario int not null auto_increment primary key,
+	cliente int,
+    nombre varchar(50),
+    clave varchar(80),
+    estado int,
+    foreign key (cliente) references Cliente(id_cliente),
+    foreign key (estado) references Estado(id_estado));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Pago()
+begin 
+	create table Pago(id_pago int not null auto_increment primary key,
+    usuario int,
+    cuenta int,
+    fecha date,
+    servicio int,
+   monto int,
+    foreign key (usuario) references Usuario(id_usuario),
+    foreign key (cuenta) references Cuenta(id_cuenta),
+    foreign key (servicio) references Servicio(id_servi));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Historial_transaccion()
+begin 
+	create table Historial_transaccion(id_htrans int not null auto_increment primary key,
+    fecha date,
+    cuenta int,
+    pago int,
+    descripcion varchar (50),
+    foreign key (cuenta) references Cuenta(id_cuenta),
+    foreign key (pago) references Pago(id_pago));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Historial_Movimiento()
+begin 
+	create table Historial_Movimiento(id_hmov int not null auto_increment primary key,
+    fecha date,
+    cuenta int,
+    tipo_operacion int,
+    descripcion varchar (50),
+    monto int,
+    foreign key (cuenta) references Cuenta(id_cuenta),
+    foreign key (tipo_operacion) references Tipo_operacion(id_toper));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Deposito_Monetario()
+begin 
+	create table Deposito_Monetario(id_deposito int not null auto_increment primary key,
+    cuenta int,
+    deposito int,
+    foreign key (cuenta) references Cuenta(id_cuenta));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ahorro()
+begin 
+	create table Ahorro(id_ahorro int not null auto_increment primary key,
+    cuenta int,
+    ahorro int,
+    foreign key (cuenta) references Cuenta(id_cuenta));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Fondo_Pension()
+begin 
+	create table Fondo_Pension(id_pension int not null auto_increment primary key,
+    cuenta int,
+	taza_interes varchar(25),
+    plazo date,
+    foreign key (cuenta) references Cuenta(id_cuenta));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Tarjeta_credito()
+begin 
+	create table Tarjeta_credito(id_tarjeta int not null auto_increment primary key,
+    cuenta int,
+	Limite_credito int,
+	taza_interes varchar(25),
+    foreign key (cuenta) references Cuenta(id_cuenta));
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Prestamo()
+begin 
+	create table Prestamo(id_Prestamo int not null auto_increment primary key,
+    cuenta int,
+	capital_adeudado int,
+    capital_pagado int,
+	taza_interes varchar(25),
+    fecha date,
+    foreign key (cuenta) references Cuenta(id_cuenta));
+end $$
+delimiter ;
+#==========================================LLAMAR TABLAS===========================================#
+Call Tipo_Operacion;
+Call Telefonia;
+Call Proveedor;
+Call Servicio;
+Call Estado;
+Call Moneda;
+Call Tipo_identificacion;
+Call Genero;
+Call Nacionalidad;
+Call Zona;
+Call Cliente;
+Call Telefono_casa;
+Call Telefono_Trabajo;
+Call Telefono_Movil;
+Call Usuario;
+Call Cuenta;
+Call Pago;
+Call Historial_Transaccion;
+Call Historial_Movimiento;
+Call Deposito_Monetario;
+Call Prestamo;
+Call Ahorro;
+Call Tarjeta_Credito;
+Call Fondo_Pension;
+#========================================PROCESOS DE INGRESO========================================#
+delimiter $$
+create procedure Ingreso_Tipo_Operacion ( in N_nombre varchar (20))
+begin
+insert into Tipo_Operacion(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Telefonia ( in N_nombre varchar (20))
+begin
+insert into Telefonia(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Proveedor ( in N_nombre varchar (20))
+begin
+insert into Proveedor(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Servicio( in N_nombre varchar (20), in N_proveedor int)
+begin
+insert into Servicio(nombre,proveedor) values (N_nombre,N_proveedor);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Estado ( in N_nombre varchar (20))
+begin
+insert into Estado(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Moneda ( in N_nombre varchar (20))
+begin
+insert into Moneda(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Tipo_Identificacion ( in N_nombre varchar (20))
+begin
+insert into Tipo_Identificacion(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_genero ( in N_nombre varchar (20))
+begin
+insert into genero(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Zona( in N_nombre varchar (20))
+begin
+insert into Zona(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Nacionalidad ( in N_nombre varchar (20))
+begin
+insert into Nacionalidad(nombre) values (N_nombre);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Telefono_Casa ( in N_numero int, in N_cliente int, in N_telefonia int)
+begin
+insert into Telefono_Casa(numero,cliente,telefonia) values (N_numero,N_cliente,N_telefonia);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Telefono_trabajo ( in N_numero int, in N_cliente int, in N_telefonia int)
+begin
+insert into Telefono_trabajo(numero,cliente,telefonia) values (N_numero,N_cliente,N_telefonia);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Telefono_Movil ( in N_numero int, in N_cliente int, in N_telefonia int)
+begin
+insert into Telefono_Movil(numero,cliente,telefonia) values (N_numero,N_cliente,N_telefonia);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Cliente (in N_Codigo int,in N_Primer_nombre varchar(30),in N_Segundo_nombre varchar(30),in N_Primer_apellido varchar(30),
+in N_Segundo_apellido varchar(30),in N_genero int,in N_direccion int,
+in N_nacionalidad int , in N_tipo_identificacion int,in N_no_identificacion int)
+begin
+insert into Cliente(Codigo,Primer_nombre,Segundo_nombre,Primer_apellido,Segundo_apellido,genero,direccion,nacionalidad,tipo_identificacion,no_identificacion) 
+values (N_Codigo,N_Primer_nombre,N_Segundo_nombre,N_Primer_apellido,N_Segundo_apellido,N_genero,N_direccion,N_nacionalidad,N_tipo_identificacion,N_no_identificacion);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Usuario (in N_cliente int, in N_nombre varchar(50),in N_clave varchar(80),in N_estado int)
+begin
+insert into Usuario (cliente,nombre,clave,estado) values (N_cliente,N_nombre,N_clave,N_estado);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Cuenta (in N_cliente int, in N_moneda int ,in N_saldo int)
+begin
+insert into Cuenta (cliente,moneda,saldo) values (N_cliente,N_moneda,N_saldo);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Pago (in N_usuario int,in N_cuenta int, in N_fecha date, in N_servicio int, in N_monto int)
+begin
+insert into Pago (usuario,cuenta,fecha,servicio,monto) values (N_usuario,N_cuenta,N_fecha,N_servicio,N_monto);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Historial_Transaccion (in N_fecha date, in N_cuenta int,in N_pago int, in N_descripcion varchar(30))
+begin
+insert into Historial_Transaccion (fecha,cuenta,pago,descripcion) values (N_fecha,N_cuenta,N_pago,N_descripcion);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Historial_Movimiento (in N_fecha date, in N_cuenta int,in N_tipo_operacion int, in N_descripcion varchar(30), in N_monto int)
+begin
+insert into Historial_Movimiento (fecha,cuenta,tipo_operacion,descripcion,monto) 
+values (N_fecha,N_cuenta,N_tipo_operacion,N_descripcion,N_monto);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Deposito_Monetario (in N_cuenta int, in N_deposito int)
+begin
+insert into Deposito_Monetario (cuenta,deposito) values (N_cuenta,N_deposito);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Prestamo (in N_cuenta int,in N_capital_adeudado int,in N_capital_pagado int,in N_taza_interes varchar(25),in N_fechas date)
+begin
+insert into Prestamo (cuenta,capital_adeudado,capital_pagado,taza_interes,fecha) values (N_cuenta,N_capital_adeudado,N_capital_pagado,N_taza_interes,N_fechas);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Ahorro(in N_cuenta int,in N_ahorro int)
+begin
+insert into  Ahorro (cuenta,ahorro) values (N_cuenta,N_ahorro);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Tarjeta_Credito (in N_cuenta int,in N_limite_credito int,in N_taza_interes varchar(25))
+begin
+insert into  Tarjeta_Credito (cuenta,limite_credito,taza_interes) values (N_cuenta,N_limite_credito,N_taza_interes);
+end $$
+delimiter ;
+
+delimiter $$
+create procedure Ingreso_Fondo_Pension (in N_cuenta int,in N_taza_interes varchar(25),in N_plazo date)
+begin
+insert into  Fondo_Pension (cuenta,taza_interes,plazo) values (N_cuenta,N_taza_interes,N_plazo);
+end $$
+delimiter ;
+#============================================LLAMAR INGRESO============================================#
+Call Ingreso_Tipo_Operacion('Debito');
+Call Ingreso_Tipo_Operacion('Credito');
+
+Call Ingreso_Telefonia('Claro');
+Call Ingreso_Telefonia('Tigo');
+Call Ingreso_Telefonia('Movistar');
+
+Call Ingreso_Proveedor('EGGSA');
+Call Ingreso_Proveedor('EMPAGUA');
+Call Ingreso_Proveedor('MUNI');
+Call Ingreso_Proveedor('USAC');
+Call Ingreso_Proveedor('BASURERO');
+
+Call Ingreso_Servicio('LUZ',1);
+Call Ingreso_Servicio('AGUA',2);
+Call Ingreso_Servicio('TELEFONO',3);
+Call Ingreso_Servicio('UNIVERSIDAD',4);
+Call Ingreso_Servicio('BASURA',5);
+
+Call Ingreso_Estado('Habilitado');
+Call Ingreso_Estado('DesHabilitado');
+
+Call Ingreso_Moneda('Quetzal');
+Call Ingreso_Moneda('Dolar');
+Call Ingreso_Moneda('Euro');
+
+Call Ingreso_Tipo_identificacion('DPI');
+Call Ingreso_Tipo_identificacion('PASAPORTE');
+
+Call Ingreso_Genero('Masculino');
+Call Ingreso_Genero('Femenino');
+
+Call Ingreso_Nacionalidad('Guatemalteca');
+Call Ingreso_Nacionalidad('Americana');
+Call Ingreso_Nacionalidad('Italiana');
+
+Call Ingreso_Zona('Zona 1');
+Call Ingreso_Zona('Zona 2');
+Call Ingreso_Zona('Zona 3');
+Call Ingreso_Zona('Zona 4');
+Call Ingreso_Zona('Zona 5');
+
+Call Ingreso_Cliente(2016113,'Gabriel','Caleb','Figueros','Cardona',1,1,1,1,2020101);
+Call Ingreso_Cuenta(1,1,500);
+Call Ingreso_Cuenta(1,1,750);
+Call Ingreso_Cuenta(1,1,300);
+
+Call Ingreso_Cliente(2016408,'Luis','Angel','Gomez','Garcia',1,1,2,2,3311501);
+Call Ingreso_Cuenta(2,2,620);
+Call Ingreso_Cuenta(2,2,200);
+Call Ingreso_Cuenta(2,2,850);
+
+Call Ingreso_Cliente(2019445,'Yshawellah','Mia','Aldana','Perez',2,2,3,2,5461321);
+Call Ingreso_Cuenta(3,3,250);
+Call Ingreso_Cuenta(3,3,200);
+Call Ingreso_Cuenta(3,3,310);
+
+Call Ingreso_Cliente(2019333,'Laura','Zhairy','Lara','Garcia',2,2,1,1,2030102);
+Call Ingreso_Cuenta(4,1,800);
+Call Ingreso_Cuenta(4,1,950);
+Call Ingreso_Cuenta(4,1,790);
+
+Call Ingreso_Cliente(2016084,'Pablo','Josue','Figueros','Cardona',1,1,2,2,3150201);
+Call Ingreso_Cuenta(5,2,300);
+Call Ingreso_Cuenta(5,2,600);
+Call Ingreso_Cuenta(5,2,700);
+
+Call Ingreso_Cliente(2019120,'Ana','Judith','Cubur','Sanchez',2,2,1,1,5050103);
+Call Ingreso_Cuenta(6,1,800);
+Call Ingreso_Cuenta(6,1,900);
+Call Ingreso_Cuenta(6,1,950);
+
+Call Ingreso_Telefono_casa(24424222,1,1);
+Call Ingreso_Telefono_casa(32200102,2,3);
+Call Ingreso_Telefono_casa(32165484,3,1);
+Call Ingreso_Telefono_casa(61516230,4,2);
+Call Ingreso_Telefono_casa(35205479,5,3);
+Call Ingreso_Telefono_casa(45612479,6,2);
+
+Call Ingreso_Telefono_Trabajo(25951848,1,1);
+Call Ingreso_Telefono_Trabajo(26498753,2,2);
+Call Ingreso_Telefono_Trabajo(12645351,3,3);
+Call Ingreso_Telefono_Trabajo(26485951,4,2);
+Call Ingreso_Telefono_Trabajo(15948763,5,1);
+Call Ingreso_Telefono_Trabajo(78418529,6,2);
+
+Call Ingreso_Telefono_Movil(12345678,1,1);
+Call Ingreso_Telefono_Movil(25146983,2,2);
+Call Ingreso_Telefono_Movil(21341568,3,3);
+Call Ingreso_Telefono_Movil(32165478,4,1);
+Call Ingreso_Telefono_Movil(87654321,5,2);
+Call Ingreso_Telefono_Movil(48591627,6,2);
+
+Call Ingreso_Usuario(1,'Usuario1',md5('POLLOOCO'),1);
+Call Ingreso_Usuario(2,'Usuario2',md5('HOLAKASE'),1);
+Call Ingreso_Usuario(3,'Usuario3',md5('TRABAJAEN'),2);
+Call Ingreso_Usuario(4,'Usuario4',md5('ESTOOKHACE'),2);
+Call Ingreso_Usuario(5,'Usuario5',md5('JAJASTEMEN'),1);
+Call Ingreso_Usuario(6,'Usuario6',md5('TRETREMEN'),1);
+
+Call Ingreso_Ahorro(1,8000);
+Call Ingreso_Ahorro(2,5000);
+Call Ingreso_Ahorro(4,4500);
+Call Ingreso_Ahorro(16,6000);
+
+Call Ingreso_Tarjeta_Credito(5,4000,'8%');
+Call Ingreso_Tarjeta_Credito(6,5000,'6%');
+Call Ingreso_Tarjeta_Credito(13,6000,'6%');
+Call Ingreso_Tarjeta_Credito(14,7000,'12%');
+Call Ingreso_Tarjeta_Credito(15,8000,'8%');
+
+Call Ingreso_Pago(1,1,'2019-08-13',1,500);
+Call Ingreso_Pago(1,1,'2019-08-10',2,500);
+Call Ingreso_Pago(1,2,'2019-10-10',3,600);
+Call Ingreso_Pago(2,4,'2019-08-10',4,350);
+Call Ingreso_Pago(2,5,'2019-09-11',1,900);
+Call Ingreso_Pago(3,7,'2019-09-08',3,200);
+Call Ingreso_Pago(4,11,'2019-09-14',2,600);
+Call Ingreso_Pago(5,13,'2019-09-30',5,600);
+Call Ingreso_Pago(2,6,'2019-10-18',1,200);
+Call Ingreso_Pago(5,13,'2019-07-20',2,350);
+Call Ingreso_Pago(5,13,'2019-08-25',3,600);
+Call Ingreso_Pago(5,14,'2019-07-15',4,500);
+Call Ingreso_Pago(6,16,'2019-08-20',5,600);
+
+Call Ingreso_Historial_Transaccion('2019-08-13',1,1,'PAGO LUZ');
+Call Ingreso_Historial_Transaccion('2019-08-10',1,2,'PAGO AGUA');
+Call Ingreso_Historial_Transaccion('2019-10-10',2,3,'PAGO TELEFONO');
+Call Ingreso_Historial_Transaccion('2019-08-10',4,4,'PAGO UNIVERSIDAD');
+Call Ingreso_Historial_Transaccion('2019-09-30',5,5,'PAGO BASURA');
+Call Ingreso_Historial_Transaccion('2019-10-18',6,6,'PAGO LUZ');
+Call Ingreso_Historial_Transaccion('2019-07-20',13,7,'PAGO AGUA');
+Call Ingreso_Historial_Transaccion('2019-08-25',13,8,'PAGO TELEFONO');
+Call Ingreso_Historial_Transaccion('2019-07-15',14,9,'PAGO UNIVERSIDAD');
+Call Ingreso_Historial_Transaccion('2019-08-20',16,10,'PAGO BASURA');
+
+Call Ingreso_Deposito_Monetario(3,100);
+Call Ingreso_Deposito_Monetario(7,200);
+Call Ingreso_Deposito_Monetario(17,200);
+Call Ingreso_Deposito_Monetario(18,100);
+
+Call Ingreso_Prestamo(8,5000,1000,'12%','2019-08-12');
+Call Ingreso_Prestamo(10,4000,3500,'18%','2019-08-15');
+Call Ingreso_Prestamo(15,2000,1000,'6%','2019-10-18');
+
+Call Ingreso_Fondo_Pension(9,'12%','2019-10-30');
+Call Ingreso_Fondo_Pension(11,'6%','2019-10-15');
+Call Ingreso_Fondo_Pension(12,'8%','2019-9-30');
+
+Call Ingreso_Historial_Movimiento('2019-07-15',3,2,'DEPOSITO',100);
+Call Ingreso_Historial_Movimiento('2019-08-13',7,2,'DEPOSITO',200);
+Call Ingreso_Historial_Movimiento('2019-08-20',17,2,'DEPOSITO',200);
+Call Ingreso_Historial_Movimiento('2019-08-10',18,2,'DEPOSITO',100);
+Call Ingreso_Historial_Movimiento('2019-07-20',8,1,'PRESTAMO',5000);
+Call Ingreso_Historial_Movimiento('2019-10-18',10,1,'PRESTAMO',4000);
+Call Ingreso_Historial_Movimiento('2019-10-10',15,1,'PRESTAMO',2000);
+Call Ingreso_Historial_Movimiento('2019-10-30',9,2,'PENSION',500);
+Call Ingreso_Historial_Movimiento('2019-10-15',11,2,'PENSION',700);
+Call Ingreso_Historial_Movimiento('2019-9-30',12,2,'PENSION',600);
+#==========================================MODIFICACION==========================================#
+
+delimiter $$
+create procedure modificar_Tipo_Operacion(in nombres varchar(30),in abc int)
+begin
+	update Tipo_Operacion set nombre=nombres where id_toper=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Telefonia(in nombres varchar(30),in abc int)
+begin
+	update Telefonia set nombre=nombres where id_tel=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Proveedor(in nombres varchar(30),in abc int)
+begin
+	update Proveedor set nombre=nombres where id_prov=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Servicio(in nombres varchar(30),in provs int ,in abc int)
+begin
+	update Servicio set nombre=nombres, proveedor=provs where id_servi=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Estado(in nombres varchar(30),in abc int)
+begin
+	update Estado set nombre=nombres where id_estado=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Moneda(in nombres varchar(30),in abc int)
+begin
+	update Moneda set nombre=nombres where id_moneda=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Tipo_Identificacion(in nombres varchar(30),in abc int)
+begin
+	update Tipo_Identificacion set nombre=nombres where id_tident=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Genero(in nombres varchar(30),in abc int)
+begin
+	update Genero set nombre=nombres where id_genero=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Nacionalidad(in nombres varchar(30),in abc int)
+begin
+	update Nacionalidad set nombre=nombres where id_nacion=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Zona(in nombres varchar(30),in abc int)
+begin
+	update Zona set nombre=nombres where id_zona=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Cliente(in Codigos int,in Primern varchar(30),in Segundon varchar(30),in Primera varchar(30),
+in Segundoa varchar(30),in generos int,in direccions int,
+in nacionalidads int , in tipo_identificacions int,in no_identificacions int,in abc int
+)
+begin
+	update Cliente set Codigo=Codigos,Primer_nombre=Primern,Segundo_nombre=Segundon,Primer_apellido=Primera,
+    Segundo_apellido=Segundoa,genero=generos,direccion=direccions,nacionalidad=nacionalidads,
+    tipo_identificacion=tipo_identificacions,no_identificacion=no_identificacions where id_cliente=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Telefono_Casa(in numeros int,in clientes int,in telefonias int,in abc int)
+begin
+	update Telefono_Casa set numero=numeros, cliente=clientes, telefonia=telefonias where id_casa=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Telefono_Movil(in numeros int,in clientes int,in telefonias int,in abc int)
+begin
+	update Telefono_Movil set numero=numeros, cliente=clientes, telefonia=telefonias where id_movil=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Telefono_trabajo(in numeros int,in clientes int,in telefonias int,in abc int)
+begin
+	update Telefono_trabajo set numero=numeros, cliente=clientes, telefonia=telefonias where id_trabajo=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Usuario(in clientes int,in nombres varchar(30),in claves varchar(80),in estados int,in abc int)
+begin
+	update Usuario set cliente=clientes,nombre=nombres, clave=claves, estado=estados where id_usuario=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Pago (in usuarios int,in cuentas int,in fechas date,in servicios int,in montos int, in abc int)
+begin
+	update Pago set usuario=usuarios,cuenta=cuentas,fecha=fechas,servicio=servicios,monto=montos where id_pago=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Historia_Transaccion(in fechas date,in cuentas int,in pagos int,in descripciones varchar(30), in abc int)
+begin
+	update Historia_Transaccion set fecha=fechas,cuenta=cuentas,pago=pagos,descripcion=descripciones where id_htrans=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Historia_Movimiento(in fechas date,in cuentas int,in tipos int,in descripciones varchar(30), in abc int)
+begin
+	update Historia_Movimiento set fecha=fechas,cuenta=cuentas,tipo_operacion=tipos,descripcion=descripciones where id_hmov=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Deposito_Monetario(in cuentas int,in depositos int,in abc int)
+begin
+	update Deposito_Monetario set cuenta=cuentas, deposito=depositos where id_deposito=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Prestamo(in cuentas int,in capas int,in capos int,in tazas varchar(25),in fechas date,in abc int)
+begin
+	update Prestamo set cuenta=cuentas,capital_adeudado=capas,capital_pagado=capos, taza_interes=tazas, fecha=fechas where id_prestamo=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_ahorro(in cuentas int,in ahorros int,in abc int)
+begin
+	update Ahorro set cuenta=cuentas, ahorro=ahorros where id_ahorro=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Tarjeta_Credito(in cuentas int,in limites int,in tazas varchar(25),in abc int)
+begin
+	update Tarjeta_Credito set cuenta=cuentas, Limite_credito=limites, taza_interes=tazas where id_tarjeta=abc;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure modificar_Fondo_Pension(in cuentas int,in tazas varchar(25), in plazos date,in abc int)
+begin
+	update Fondo_Pension set cuenta=cuentas, taza_interes=tazas,plazo=plazos where id_pension=abc;
+end $$
+delimiter ;
+#========================================LLAMAR MODIFICAR========================================#
+Call modificar_Telefonia('TUENTI',3);
+Call modificar_Proveedor('Movistar',3);
+Call modificar_Nacionalidad('EE.UU',2);
+Call modificar_Zona('Zona 6',5);
+Call modificar_Cliente(2019120,'Clarita','Alexa','Lopez','Sanchez',2,2,1,1,3216101,6);
+Call modificar_Telefono_Movil(98765412,6,2,6);
+#=========================================ELIMINAR DATOS=========================================#
+delimiter $$
+create procedure eliminar_Tipo_operacion(in abc int)
+begin
+	delete from Tipo_operacion where abc=id_toper;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Telefonia(in abc int)
+begin
+	delete from Telefonia where abc=id_tel;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Proveedor(in abc int)
+begin
+	delete from Proveedor where abc=id_prov;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_servicio(in abc int)
+begin
+	delete from Servicio where abc=id_servi;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Estado(in abc int)
+begin
+	delete from Estado where abc=id_estado;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_moneda(in abc int)
+begin
+	delete from Moneda where abc=id_moneda;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Tipo_identificacion(in abc int)
+begin
+	delete from Tipo_identificacion where abc=id_tident;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_genero(in abc int)
+begin
+	delete from Genero where abc=id_genero;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Nacionalidad(in abc int)
+begin
+	delete from Nacionalidad where abc=id_nacion;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Zona(in abc int)
+begin
+	delete from Zona where abc=id_zona;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Cliente(in abc int)
+begin
+	delete from Cliente where abc=id_cliente;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Telefono_casa(in abc int)
+begin
+	delete from Telefono_casa where abc=id_casa;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Telefono_trabajo(in abc int)
+begin
+	delete from Telefono_trabajo where abc=id_trabajo;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Telefono_Movil(in abc int)
+begin
+	delete from Telefono_Movil where abc=id_movil;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Usuario(in abc int)
+begin
+	delete from Usuario where abc=id_usuario;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Cuenta(in abc int)
+begin
+	delete from Cuenta where abc=id_cuenta;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Pago(in abc int)
+begin
+	delete from Pago where abc=id_pago;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Historial_Transaccion(in abc int)
+begin
+	delete from Historial_Transaccion where abc=id_htrans;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Historial_Movimiento(in abc int)
+begin
+	delete from Historial_Movimiento where abc=id_hmov;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Deposito_Monetario(in abc int)
+begin
+	delete from Deposito_Monetario where abc=id_deposito;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Prestamo(in abc int)
+begin
+	delete from Prestamo where abc=id_prestamo;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Ahorro(in abc int)
+begin
+	delete from Ahorro where abc=id_ahorro;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Tarjeta_Credito(in abc int)
+begin
+	delete from Tarjeta_Credito where abc=id_tarjeta;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure eliminar_Fondo_Pension(in abc int)
+begin
+	delete from Fondo_Pension where abc=id_pension;
+end $$
+delimiter ;
+#=========================================LLAMAR ELIMINAR==========================================#
+Call eliminar_Telefono_casa(6);
+Call eliminar_Telefono_Trabajo(6);
+Call eliminar_Telefono_Movil(6);
+Call eliminar_Deposito_Monetario(3);
+Call eliminar_Deposito_Monetario(4);
+Call eliminar_Ahorro(4);
+Call eliminar_Historial_Movimiento(3);
+Call eliminar_Historial_Movimiento(4);
+Call eliminar_Historial_Movimiento(3);
+Call eliminar_Historial_Transaccion(10);
+Call eliminar_Pago(10);
+Call eliminar_Cuenta(17);
+Call eliminar_Cuenta(18);
+#=========================================BUSCAR CODIGO==========================================#
+delimiter $$
+create procedure consulta_Tipo_operacion(in abc int)
+begin
+	select * from Tipo_operacion where abc=id_toper;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Telefonia(in abc int)
+begin
+	select * from Telefonia where abc=id_tel;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Proveedor(in abc int)
+begin
+	select * from Proveedor where abc=id_prov;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_servicio(in abc int)
+begin
+	select * from Servicio where abc=id_servi;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Estado(in abc int)
+begin
+	select * from Estado where abc=id_estado;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_moneda(in abc int)
+begin
+	select * from Moneda where abc=id_moneda;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Tipo_identificacion(in abc int)
+begin
+	select * from Tipo_identificacion where abc=id_tident;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_genero(in abc int)
+begin
+	select * from Genero where abc=id_genero;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Nacionalidad(in abc int)
+begin
+	select * from Nacionalidad where abc=id_nacion;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Zona(in abc int)
+begin
+	select * from Zona where abc=id_zona;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Cliente(in abc int)
+begin
+	select * from Cliente where abc=id_cliente;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Telefono_casa(in abc int)
+begin
+	select * from Telefono_casa where abc=id_casa;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Telefono_trabajo(in abc int)
+begin
+	select * from Telefono_trabajo where abc=id_trabajo;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Telefono_Movil(in abc int)
+begin
+	select * from Telefono_Movil where abc=id_movil;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Usuario(in abc int)
+begin
+	select * from Usuario where abc=id_usuario;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Cuenta(in abc int)
+begin
+	select * from Cuenta where abc=id_cuenta;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Pago(in abc int)
+begin
+	select * from Pago where abc=id_pago;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Historial_Transaccion(in abc int)
+begin
+	select * from Historial_Transaccion where abc=id_htrans;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Historial_Movimiento(in abc int)
+begin
+	select * from Historial_Movimiento where abc=id_hmov;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Deposito_Monetario(in abc int)
+begin
+	select * from Deposito_Monetario where abc=id_deposito;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Prestamo(in abc int)
+begin
+	select * from Prestamo where abc=id_prestamo;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Ahorro(in abc int)
+begin
+	select * from Ahorro where abc=id_ahorro;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Tarjeta_Credito(in abc int)
+begin
+	select * from Tarjeta_Credito where abc=id_tarjeta;
+end $$
+delimiter ;
+
+delimiter $$
+create procedure consulta_Fondo_Pension(in abc int)
+begin
+	select * from Fondo_Pension where abc=id_pension;
+end $$
+delimiter ;
+#==========================================LLAMAR BUSCAR=========================================#
+Call consulta_Tipo_Operacion(1);
+Call consulta_Telefonia(1);
+Call consulta_Proveedor(1);
+Call consulta_Servicio(1);
+Call consulta_Estado(1);
+Call consulta_Moneda(1);
+Call consulta_Tipo_identificacion(1);
+Call consulta_Genero(1);
+Call consulta_Nacionalidad(1);
+Call consulta_Zona(1);
+Call consulta_Cliente(1);
+Call consulta_Telefono_casa(1);
+Call consulta_Telefono_Trabajo(1);
+Call consulta_Telefono_Movil(1);
+Call consulta_Usuario(1);
+Call consulta_Cuenta(1);
+Call consulta_Pago(1);
+Call consulta_Historial_Transaccion(1);
+Call consulta_Historial_Movimiento(1);
+Call consulta_Deposito_Monetario(1);
+Call consulta_Prestamo(1);
+Call consulta_Ahorro(1);
+Call consulta_Tarjeta_Credito(1);
+Call consulta_Fondo_Pension(1);
+#============================================CONSULTAS===========================================#
+#================================Mostrar las cuentas de un Cliente===============================#
+delimiter $$
+create procedure Consulta2(in cliente int)
+begin
+	select c.Primer_nombre as Cliente, k.id_cuenta as Cuenta, t.id_tarjeta as Tarjeta,t.limite_credito 
+    as credito, P.id_prestamo as Prestamo, p.capital_adeudado as Prestamo
+    from cliente c,cuenta k,Tarjeta_Credito t, Prestamo p
+    where k.cliente=c.id_cliente and c.id_cliente=cliente and k.id_cuenta=t.cuenta group by k.id_Cuenta;
+end $$
+delimiter ;
+call Consulta2(5);
+#=======================Mostrar el historial de transacciones de un cliente======================#
+drop procedure Consulta4
+delimiter $$
+create procedure Consulta4(in cliente int)
+begin
+	select c.Primer_nombre as Cliente,p.usuario, h.pago as Pago,h.descripcion, h.fecha as Fecha
+    from Cliente c, Historial_Transaccion h, pago p, usuario u, cuenta cu
+    where c.id_cliente=u.cliente and u.id_usuario=p.usuario and p.id_pago=h.pago and c.id_cliente=cliente group by h.id_htrans;
+end $$
+delimiter ;
+call Consulta4(1);
+
+#=====================Mostrar los usuarios que deben más de un mes de agua========================#
+delimiter $$
+create procedure Consulta6()
+begin
+	select u.nombre as Usuario
+    from Servicio s,Pago p, Cuenta c,Usuario u
+    where  U.id_usuario=p.usuario  and p.servicio=s.id_servi and S.id_servi=2 and p.cuenta=c.id_cuenta and p.fecha between '2019-01-01' and '2019-06-30';
+end $$
+delimiter ;
+call Consulta6();
+#=======================Mostrar la información sobre las tarjetas de crédito======================#
+delimiter $$
+create procedure Consulta7(in usuario varchar(30))
+begin
+	select t.cuenta, t.taza_interes , t.limite_credito
+    from Cuenta c, Tarjeta_credito t, Cliente e, Usuario u
+    where e.id_cliente=u.cliente and u.nombre=usuario and c.id_cuenta=t.cuenta and e.id_cliente=c.cliente
+    order by limite_credito asc;
+end $$
+delimiter ;
+call Consulta7('Usuario5');
+#=======================Mostrar los usuarios que deben más de un mes de luz======================#
+delimiter $$
+create procedure Consulta9()
+begin
+	select u.nombre as Usuario
+    from Servicio s,Pago p, Cuenta c,Usuario u
+    where  U.id_usuario=p.usuario  and p.servicio=s.id_servi and S.id_servi=1 and p.cuenta=c.id_cuenta and p.fecha between '2019-01-01' and '2019-06-30';
+end $$
+delimiter ;
+call Consulta9();
+#============Mostrar las transacciones realizadas en la primera quincena de septiembre===========#
+delimiter $$
+create procedure Consulta10()
+begin
+	select * from pago where fecha between '2019-09-01' and '2019-09-15' ; 
+end $$
+delimiter ;
+call Consulta10();
+#================================Mostrar la información del cliente==============================#
+delimiter $$
+create procedure Consulta11 (in usuario varchar(30))
+begin
+	select u.cliente as ID, c.Primer_nombre, c.Segundo_nombre, c.Primer_apellido, c.Segundo_apellido, c.Codigo as Contador, 
+    z.nombre as Direccion, m.numero as Movil, ca.numero as Tel_Casa, t.numero as Tel_trabajo
+    from Cliente c,Telefono_Movil m, Telefono_Casa ca, Telefono_trabajo t, Usuario u, Zona z
+    where z.id_zona=c.direccion and ca.cliente=c.id_cliente and t.cliente=c.id_cliente 
+    and M.cliente=c.id_cliente and u.cliente=c.id_cliente and u.nombre=usuario ;
+end $$
+delimiter ;
+call Consulta11('Usuario1');
+#================Mostrar el historial de movimientos de los primeros 15 días del mes==============#
+delimiter $$
+create procedure Consulta12(in usuario varchar(30))
+begin
+	select  h.cuenta as No_cuenta , h.fecha,t.nombre as tipo,h.monto
+    from Usuario u,Cuenta c, Historial_Movimiento h,tipo_operacion t
+    where h.fecha between '2019-08-01' and '2019-08-15' and c.id_cuenta=h.cuenta and t.id_toper=h.tipo_operacion
+    and u.cliente=c.cliente and u.nombre=usuario;
+end $$
+delimiter ;
+call Consulta12('Usuario3');
